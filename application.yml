@@ -1,0 +1,5 @@
+database:
+  mysql:
+    dsn: root:nike5510@tcp(124.221.123.87)/my_exercise?charset=utf8mb4&parseTime=True&loc=Local
+    username:
+    password:
