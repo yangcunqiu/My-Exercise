@@ -1,12 +1,13 @@
 package entity
 
-import "gorm.io/gorm"
+import "My-Exercise/model"
 
 // Category 分类表
 type Category struct {
-	gorm.Model
-	Name     string `gorm:"comment:分类名称"`
+	Id       uint
+	Name     string `gorm:"type:varchar(100);comment:分类名称"`
 	ParentId int    `gorm:"comment:父分类id"`
+	model.BaseInfo
 }
 
 func (c Category) TableName() string {

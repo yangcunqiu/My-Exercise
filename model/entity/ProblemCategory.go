@@ -1,12 +1,13 @@
 package entity
 
-import "gorm.io/gorm"
+import "My-Exercise/model"
 
 // ProblemCategory 题目-分类中间表
 type ProblemCategory struct {
-	gorm.Model
+	Id         uint
 	ProblemId  int `gorm:"comment:题目id"`
 	CategoryId int `gorm:"comment:分类id"`
+	model.BaseInfo
 }
 
 func (pc ProblemCategory) TableName() string {
