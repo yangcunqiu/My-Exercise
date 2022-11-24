@@ -13,10 +13,8 @@ func ListProblem(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageNum", "10"))
 	title := c.Query("title")
 
-	var count int64
-	problems := make([]entity.Problem, 0)
-	tx := entity.ListProblem(title)
-	tx.Debug().Omit("content").Count(&count).Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&problems)
+	var total int64
+	problems := entity.ListProblem(title)
 
 	c.JSON(http.StatusOK, model.Result{
 		Code:    200,
@@ -24,6 +22,7 @@ func ListProblem(c *gin.Context) {
 		Data: model.Page{
 			PageNum:  pageNum,
 			PageSize: pageSize,
+			Total:    total,
 			List:     problems,
 		},
 	})

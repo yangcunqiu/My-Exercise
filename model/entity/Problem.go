@@ -3,7 +3,7 @@ package entity
 import (
 	"My-Exercise/global"
 	"My-Exercise/model"
-	"gorm.io/gorm"
+	"My-Exercise/model/dto"
 )
 
 // Problem 题目表
@@ -20,6 +20,10 @@ func (p Problem) TableName() string {
 	return "problem"
 }
 
-func ListProblem(title string) *gorm.DB {
-	return global.DB.Model(&Problem{}).Where("title like ?", "%"+title+"%").Joins("left join problem_category pc on pc.category_id = problem_id").Joins("left join category c on c.id = pc.category_id")
+func ListProblem(title string) []dto.ProblemCategoryDTO {
+	problems := make([]dto.ProblemCategoryDTO, 0)
+	global.DB.Debug().
+		Raw("select p.* as categoryList.id from problem p left join problem_category pc on p.id = pc.problem_id left join category c on c.id = pc.category_id where p.title like concat('%', ?, '%')", title).
+		Scan(&problems)
+	return problems
 }

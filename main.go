@@ -25,7 +25,9 @@ func initRouter() {
 
 func initDB() {
 	dsn := "root:nike5510@tcp(124.221.123.87)/my_exercise?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -37,7 +39,6 @@ func syncTable(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&entity.Problem{},
 		&entity.Category{},
-		&entity.ProblemCategory{},
 		&entity.Submit{},
 		&entity.User{},
 	)
