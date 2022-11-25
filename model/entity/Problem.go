@@ -3,7 +3,7 @@ package entity
 import (
 	"My-Exercise/global"
 	"My-Exercise/model"
-	"My-Exercise/model/dto"
+	"gorm.io/gorm"
 )
 
 // Problem 题目表
@@ -14,16 +14,22 @@ type Problem struct {
 	Timeout   int    `json:"timeout" gorm:"comment:超时时间(ms)"`
 	MaxMemory int    `json:"maxMemory" gorm:"comment:最大内存(kb)"`
 	model.BaseInfo
+	CategoryList []*Category `json:"categoryList" gorm:"many2many:problem_category"`
 }
 
 func (p Problem) TableName() string {
 	return "problem"
 }
 
-func ListProblem(title string) []dto.ProblemCategoryDTO {
-	problems := make([]dto.ProblemCategoryDTO, 0)
-	global.DB.Debug().
-		Raw("select p.* as categoryList.id from problem p left join problem_category pc on p.id = pc.problem_id left join category c on c.id = pc.category_id where p.title like concat('%', ?, '%')", title).
-		Scan(&problems)
-	return problems
+func ListProblem(title string, categoryId int) *gorm.DB {
+	tx := global.DB.Model(new(Problem))
+	if title != "" {
+		tx.Where("title like ?", "%"+title+"%")
+	}
+	if categoryId != 0 {
+		tx.Preload("CategoryList", "id = ?", categoryId)
+	} else {
+		tx.Preload("CategoryList")
+	}
+	return tx
 }
