@@ -20,9 +20,14 @@ func ListProblem(c *gin.Context) {
 	tx.Debug().Omit("content").Count(&total).Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&problems)
 	problemsResult := make([]entity.Problem, 0)
 	for _, item := range problems {
-		if len(item.CategoryList) != 0 {
+		if categoryId != 0 {
+			if len(item.CategoryList) != 0 {
+				problemsResult = append(problemsResult, item)
+			}
+		} else {
 			problemsResult = append(problemsResult, item)
 		}
+
 	}
 
 	c.JSON(http.StatusOK, model.Result{
