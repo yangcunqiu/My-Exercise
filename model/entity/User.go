@@ -23,3 +23,7 @@ func (u User) TableName() string {
 func GetUserById(id int) *gorm.DB {
 	return global.DB.Model(new(User)).Where("id = ?", id)
 }
+
+func GetUserByName(name string) *gorm.DB {
+	return global.DB.Where("name = ?", name)
+}
