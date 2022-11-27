@@ -26,7 +26,11 @@ func RegisterRouter(r *gin.Engine) {
 		userGroup := rootGroup.Group("/user")
 		{
 			userGroup.GET("/info/:id", service.UserInfo)
+		}
 
+		submitGroup := rootGroup.Group("/submit")
+		{
+			submitGroup.POST("/list", service.SubmitList)
 		}
 
 	}

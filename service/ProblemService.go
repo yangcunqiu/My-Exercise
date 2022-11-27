@@ -10,15 +10,14 @@ import (
 )
 
 func ListProblem(c *gin.Context) {
-	pageNum, _ := strconv.Atoi(c.DefaultQuery("pageNum", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageNum", "10"))
 	title := c.Query("title")
 	categoryId, _ := strconv.Atoi(c.Query("categoryId"))
+	pageNum, pageSize, offset := model.PageParams(c)
 
 	var total int64
 	problems := make([]entity.Problem, 0)
 	tx := entity.ListProblem(title, categoryId)
-	tx.Debug().Omit("content").Count(&total).Offset((pageNum - 1) * pageSize).Limit(pageSize).Find(&problems)
+	tx.Debug().Omit("content").Count(&total).Offset(offset).Limit(pageSize).Find(&problems)
 	problemsResult := make([]entity.Problem, 0)
 	for _, item := range problems {
 		if categoryId != 0 {
