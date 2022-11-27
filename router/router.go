@@ -11,14 +11,21 @@ func RegisterRouter(r *gin.Engine) {
 	{
 		rootGroup.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
-				"code": 200,
-				"msg":  "pong!",
+				"code":    200,
+				"message": "pong!",
 			})
 		})
 
 		problemGroup := rootGroup.Group("/problem")
 		{
 			problemGroup.GET("/list", service.ListProblem)
+			problemGroup.GET("/info/:id", service.ProblemInfo)
+
+		}
+
+		userGroup := rootGroup.Group("/user")
+		{
+			userGroup.GET("/info/:id", service.UserInfo)
 
 		}
 

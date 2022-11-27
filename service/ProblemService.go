@@ -3,8 +3,9 @@ package service
 import (
 	"My-Exercise/model"
 	"My-Exercise/model/entity"
+	"My-Exercise/utils"
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"gorm.io/gorm"
 	"strconv"
 )
 
@@ -29,15 +30,21 @@ func ListProblem(c *gin.Context) {
 		}
 
 	}
+	utils.Success(c, model.PageOf(pageNum, pageSize, total, problemsResult))
+}
 
-	c.JSON(http.StatusOK, model.Result{
-		Code:    200,
-		Message: "成功",
-		Data: model.Page{
-			PageNum:  pageNum,
-			PageSize: pageSize,
-			Total:    total,
-			List:     problemsResult,
-		},
-	})
+func ProblemInfo(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	if id == 0 {
+		utils.Fail(c, model.ErrorCodeOf(10001, "问题id不能为空"))
+		return
+	}
+	problem := new(entity.Problem)
+	tx := entity.GetProblemById(id)
+	err := tx.First(&problem).Error
+	if err == gorm.ErrRecordNotFound {
+		utils.Fail(c, model.ErrorCodeOf(10002, "问题不存在"))
+		return
+	}
+	utils.Success(c, problem)
 }

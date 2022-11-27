@@ -8,7 +8,7 @@ import (
 
 // Problem 题目表
 type Problem struct {
-	Id        uint
+	Id        uint   `json:"id"`
 	Title     string `json:"title" gorm:"type:varchar(200);comment:题目标题"`
 	Content   string `json:"content" gorm:"type:text;comment:题目内容"`
 	Timeout   int    `json:"timeout" gorm:"comment:超时时间(ms)"`
@@ -32,4 +32,8 @@ func ListProblem(title string, categoryId int) *gorm.DB {
 		tx.Preload("CategoryList")
 	}
 	return tx
+}
+
+func GetProblemById(id int) *gorm.DB {
+	return global.DB.Model(new(Problem)).Where("id = ?", id).Preload("CategoryList")
 }
