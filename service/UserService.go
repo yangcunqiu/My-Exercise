@@ -7,6 +7,7 @@ import (
 	"My-Exercise/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"log"
 	"strconv"
 )
 
@@ -50,4 +51,21 @@ func Login(c *gin.Context) {
 	// token
 	token, _ := utils.GenerateToken(user.Id, user.Name)
 	utils.Success(c, token)
+}
+
+func SendVerifyCode(c *gin.Context) {
+	emailAddr := c.Query("emailAddr")
+	if emailAddr == "" {
+		utils.Fail(c, model.ErrorCodeOf(2006, "邮箱地址不能为空"))
+	}
+	code := "678122"
+	htmlStr := "<b>您的验证码是: " + code + "<b>"
+	err := utils.SendEmail("验证码", htmlStr, emailAddr)
+	if err != nil {
+		log.Printf("发送验证码失败, to: %v, err: %v", emailAddr, err)
+		utils.Fail(c, model.ErrorCodeOf(2007, "发送验证码失败"))
+		return
+	}
+	utils.Success(c, nil)
+	return
 }
