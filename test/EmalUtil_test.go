@@ -1,6 +1,7 @@
-package utils
+package test
 
 import (
+	"My-Exercise/utils"
 	"log"
 	"testing"
 )
@@ -8,7 +9,7 @@ import (
 func TestSendEmail(t *testing.T) {
 	code := "123456"
 	htmlStr := "<b>您的验证码是: " + code + "<b>"
-	err := SendEmail("TestUtil", htmlStr, "yangcunqiuup@163.com")
+	err := utils.SendEmail("TestUtil", htmlStr, "yangcunqiuup@163.com")
 	if err != nil {
 		log.Println(err)
 	} else {

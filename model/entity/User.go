@@ -12,7 +12,7 @@ type User struct {
 	Name     string `json:"name" gorm:"type:varchar(100);comment:用户名"`
 	Password string `json:"password" gorm:"type:varchar(255);comment:密码"`
 	Phone    string `json:"phone" gorm:"type:varchar(20);comment:手机号"`
-	Mail     string `json:"mail" gorm:"type:varchar(50);comment:邮箱"`
+	Email    string `json:"email" gorm:"type:varchar(50);comment:邮箱"`
 	model.BaseInfo
 }
 
@@ -26,4 +26,8 @@ func GetUserById(id int) *gorm.DB {
 
 func GetUserByName(name string) *gorm.DB {
 	return global.DB.Where("name = ?", name)
+}
+
+func GetUserByEmail(email string) *gorm.DB {
+	return global.DB.Where("email = ?", email)
 }

@@ -1,14 +1,17 @@
 package service
 
 import (
+	"My-Exercise/global"
 	"My-Exercise/model"
 	"My-Exercise/model/entity"
 	"My-Exercise/model/query"
 	"My-Exercise/utils"
+	"context"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
 	"strconv"
+	"time"
 )
 
 func UserInfo(c *gin.Context) {
@@ -56,16 +59,58 @@ func Login(c *gin.Context) {
 func SendVerifyCode(c *gin.Context) {
 	emailAddr := c.Query("emailAddr")
 	if emailAddr == "" {
-		utils.Fail(c, model.ErrorCodeOf(2006, "邮箱地址不能为空"))
+		utils.Fail(c, model.ErrorCodeOf(20006, "邮箱地址不能为空"))
 	}
-	code := "678122"
+	// 生成验证码
+	code := utils.GenerateRandomNumberToString(6)
+
+	// 存redis
+	global.RDB.Set(context.Background(), emailAddr, code, time.Minute*5)
+
+	// 发送邮件
 	htmlStr := "<b>您的验证码是: " + code + "<b>"
 	err := utils.SendEmail("验证码", htmlStr, emailAddr)
 	if err != nil {
 		log.Printf("发送验证码失败, to: %v, err: %v", emailAddr, err)
-		utils.Fail(c, model.ErrorCodeOf(2007, "发送验证码失败"))
+		utils.Fail(c, model.ErrorCodeOf(20008, "发送验证码失败"))
 		return
 	}
 	utils.Success(c, nil)
 	return
+}
+
+func RegisterUser(c *gin.Context) {
+	userRegister := new(query.UserRegister)
+	_ = c.ShouldBindJSON(userRegister)
+	if userRegister.Name == "" || userRegister.Password == "" || userRegister.Email == "" {
+		utils.Fail(c, model.ErrorCodeOf(20009, "用户注册消息不完整"))
+	}
+
+	// 校验唯一
+	userByEmail := new(entity.User)
+	err := entity.GetUserByEmail(userRegister.Email).First(userByEmail).Error
+	if err != gorm.ErrRecordNotFound {
+		utils.Fail(c, model.ErrorCodeOf(20010, "邮箱已被注册"))
+		return
+	}
+
+	// 校验验证码
+	var ctx = context.Background()
+	resultCode, _ := global.RDB.Get(ctx, userRegister.Email).Result()
+	if userRegister.Code != resultCode {
+		utils.Fail(c, model.ErrorCodeOf(20011, "验证码错误"))
+		return
+	}
+
+	// 保存
+	user := &entity.User{
+		Name:     userRegister.Name,
+		Password: utils.GenerateMD5(userRegister.Password),
+		Phone:    userRegister.Phone,
+		Email:    userRegister.Email,
+	}
+
+	// 生成token
+	token, _ := utils.GenerateToken(user.Id, user.Name)
+	utils.Success(c, token)
 }

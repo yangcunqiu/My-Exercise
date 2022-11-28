@@ -5,6 +5,7 @@ import (
 	"My-Exercise/model/entity"
 	"My-Exercise/router"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,6 +13,7 @@ import (
 func main() {
 	initDB()
 	initRouter()
+	InitRedis()
 }
 
 func initRouter() {
@@ -45,4 +47,12 @@ func syncTable(db *gorm.DB) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func InitRedis() {
+	global.RDB = redis.NewClient(&redis.Options{
+		Addr:     "124.221.123.87:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 }
