@@ -82,8 +82,14 @@ func SendVerifyCode(c *gin.Context) {
 func RegisterUser(c *gin.Context) {
 	userRegister := new(query.UserRegister)
 	_ = c.ShouldBindJSON(userRegister)
+
 	if userRegister.Name == "" || userRegister.Password == "" || userRegister.Email == "" {
 		utils.Fail(c, model.ErrorCodeOf(20009, "用户注册消息不完整"))
+	}
+
+	if userRegister.Code == "" {
+		utils.Fail(c, model.ErrorCodeOf(20012, "验证码不能为空"))
+		return
 	}
 
 	// 校验唯一
@@ -109,6 +115,7 @@ func RegisterUser(c *gin.Context) {
 		Phone:    userRegister.Phone,
 		Email:    userRegister.Email,
 	}
+	entity.SaveUser(user)
 
 	// 生成token
 	token, _ := utils.GenerateToken(user.Id, user.Name)

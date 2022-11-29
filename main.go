@@ -12,8 +12,8 @@ import (
 
 func main() {
 	initDB()
-	initRouter()
 	InitRedis()
+	initRouter()
 }
 
 func initRouter() {
@@ -52,7 +52,7 @@ func syncTable(db *gorm.DB) {
 func InitRedis() {
 	global.RDB = redis.NewClient(&redis.Options{
 		Addr:     "124.221.123.87:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: "nike5510",
+		DB:       0, // use default DB
 	})
 }

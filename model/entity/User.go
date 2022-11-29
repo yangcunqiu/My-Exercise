@@ -31,3 +31,7 @@ func GetUserByName(name string) *gorm.DB {
 func GetUserByEmail(email string) *gorm.DB {
 	return global.DB.Where("email = ?", email)
 }
+
+func SaveUser(user *User) {
+	global.DB.Create(user)
+}

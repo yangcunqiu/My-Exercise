@@ -22,4 +22,7 @@ func TestRedis(t *testing.T) {
 		log.Println(err)
 	}
 
+	name := rdb.Get(ctx, "name")
+	log.Println(name)
+
 }
