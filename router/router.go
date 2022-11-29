@@ -29,6 +29,7 @@ func RegisterRouter(r *gin.Engine) {
 			userGroup.POST("/login", service.Login)
 			userGroup.POST("/register", service.RegisterUser)
 			userGroup.GET("/sendVerifyCode", service.SendVerifyCode)
+			userGroup.GET("/rank", service.GetUserRankList)
 		}
 
 		submitGroup := rootGroup.Group("/submit")

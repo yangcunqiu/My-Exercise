@@ -121,3 +121,14 @@ func RegisterUser(c *gin.Context) {
 	token, _ := utils.GenerateToken(user.Id, user.Name)
 	utils.Success(c, token)
 }
+
+func GetUserRankList(c *gin.Context) {
+	userList := make([]entity.User, 0)
+	var total int64
+	pageNum, pageSize, offset := model.PageParams(c)
+
+	tx := entity.ListUserRank()
+	tx.Count(&total).Offset(offset).Limit(pageSize).Find(&userList)
+
+	utils.Success(c, model.PageOf(pageNum, pageSize, total, userList))
+}
