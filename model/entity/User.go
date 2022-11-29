@@ -15,6 +15,7 @@ type User struct {
 	Email            string `json:"email" gorm:"type:varchar(50);comment:邮箱"`
 	FinishProblemNum int    `json:"finishProblemNum" gorm:"comment:完成问题数"`
 	SubmitNum        int    `json:"submitNum" gorm:"提交数"`
+	Admin            bool   `json:"admin"`
 	model.BaseInfo
 }
 
@@ -34,7 +35,7 @@ func GetUserByEmail(email string) *gorm.DB {
 	return global.DB.Model(new(User)).Where("email = ?", email)
 }
 
-func SaveUser(user *User) {
+func AddUser(user *User) {
 	global.DB.Create(user)
 }
 

@@ -1,6 +1,7 @@
 package router
 
 import (
+	"My-Exercise/middlewares"
 	"My-Exercise/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 func RegisterRouter(r *gin.Engine) {
 	rootGroup := r.Group("/exercise")
+	authGroup := rootGroup.Group("/auth")
 	{
 		rootGroup.GET("/ping", func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
@@ -20,7 +22,10 @@ func RegisterRouter(r *gin.Engine) {
 		{
 			problemGroup.GET("/list", service.ListProblem)
 			problemGroup.GET("/info/:id", service.ProblemInfo)
-
+		}
+		authProblemGroup := authGroup.Group("/problem", middlewares.Authentication(true))
+		{
+			authProblemGroup.POST("/add", service.AddProblem)
 		}
 
 		userGroup := rootGroup.Group("/user")

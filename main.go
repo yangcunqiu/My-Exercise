@@ -43,6 +43,8 @@ func syncTable(db *gorm.DB) {
 		&entity.Category{},
 		&entity.Submit{},
 		&entity.User{},
+		&entity.ProblemCategory{},
+		&entity.TestCase{},
 	)
 	if err != nil {
 		panic(err)

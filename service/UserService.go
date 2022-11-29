@@ -114,8 +114,9 @@ func RegisterUser(c *gin.Context) {
 		Password: utils.GenerateMD5(userRegister.Password),
 		Phone:    userRegister.Phone,
 		Email:    userRegister.Email,
+		Admin:    false,
 	}
-	entity.SaveUser(user)
+	entity.AddUser(user)
 
 	// 生成token
 	token, _ := utils.GenerateToken(user.Id, user.Name)
