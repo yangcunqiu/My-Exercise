@@ -40,3 +40,9 @@ func GetProblemById(id int) *gorm.DB {
 func AddProblem(problem *Problem) {
 	global.DB.Model(new(Problem)).Create(problem)
 }
+
+func CountProblemByCategoryId(categoryId int) int64 {
+	var count int64
+	global.DB.Debug().Model(new(Problem)).Joins("left join problem_category pc on pc.category_id = problem.id").Where("pc.category_id = ?", categoryId).Where("pc.deleted_at is null").Count(&count)
+	return count
+}
