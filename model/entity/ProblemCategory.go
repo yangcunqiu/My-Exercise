@@ -19,3 +19,7 @@ func (pc ProblemCategory) TableName() string {
 func AddProblemCategory(problemCategory *ProblemCategory) {
 	global.DB.Model(new(ProblemCategory)).Create(problemCategory)
 }
+
+func DeleteProblemCategoryByProblemId(problemId uint) {
+	global.DB.Model(new(ProblemCategory)).Where("problem_id = ?", problemId).Delete(new(ProblemCategory))
+}

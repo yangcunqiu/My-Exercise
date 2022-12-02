@@ -1,6 +1,7 @@
 package query
 
 type ProblemSave struct {
+	Id             uint
 	Title          string
 	Content        string
 	Timeout        int

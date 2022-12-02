@@ -24,11 +24,12 @@ func (p Problem) TableName() string {
 func ListProblem(title string, categoryId int) []dto.ProblemCategoryDTO {
 	// TODO 原生sql
 	problemCategoryDTOList := make([]dto.ProblemCategoryDTO, 0)
-	problemCategoryDTO := new(dto.ProblemCategoryDTO)
-	rows, _ := global.DB.Raw("select * from problem p left join problem_category pc on p.id = pc.problem_id left join category c on c.id = pc.category_id where p.deleted_at is null").Rows()
+	rows, _ := global.DB.Debug().Raw("select * from problem p left join problem_category pc on p.id = pc.problem_id left join category c on c.id = pc.category_id where p.deleted_at is null").Rows()
 	defer rows.Close()
 	for rows.Next() {
-		rows.Scan(problemCategoryDTO)
+		problemCategory := new(dto.ProblemCategoryDTO)
+		_ = rows.Scan(problemCategory)
+		problemCategoryDTOList = append(problemCategoryDTOList, *problemCategory)
 	}
 	return problemCategoryDTOList
 }
@@ -45,4 +46,12 @@ func CountProblemByCategoryId(categoryId int) int64 {
 	var count int64
 	global.DB.Debug().Model(new(Problem)).Joins("left join problem_category pc on pc.category_id = problem.id").Where("pc.category_id = ?", categoryId).Where("pc.deleted_at is null").Count(&count)
 	return count
+}
+
+func DeleteProblem(id int) {
+	global.DB.Model(new(Problem)).Delete(id)
+}
+
+func UpdateProblem(problem *Problem) {
+	global.DB.Model(new(Problem)).Where("id = ?", problem.Id).Updates(problem)
 }

@@ -20,3 +20,7 @@ func (t TestCase) TableName() string {
 func AddTestCase(testCase *TestCase) {
 	global.DB.Model(new(TestCase)).Create(testCase)
 }
+
+func DeleteTestCaseByProblemId(problemId uint) {
+	global.DB.Model(new(TestCase)).Where("problem_id = ?", problemId).Delete(new(TestCase))
+}
