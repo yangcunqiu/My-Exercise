@@ -73,10 +73,10 @@ func addProblem(problemSave *query.ProblemSave) {
 	entity.AddProblem(problem)
 
 	// 分类
-	addProblemCategory(problemSave.Id, problemSave.CategoryIdList)
+	addProblemCategory(problem.Id, problemSave.CategoryIdList)
 
 	// 测试用例
-	addProblemTestCase(problemSave.Id, problemSave.TestCaseList)
+	addProblemTestCase(problem.Id, problemSave.TestCaseList)
 }
 
 func addProblemCategory(problemId uint, categoryIdList []uint) {
@@ -147,4 +147,5 @@ func UpdateProblem(c *gin.Context) {
 	addProblemCategory(problemSave.Id, problemSave.CategoryIdList)
 	// 新建问题测试用例关联
 	addProblemTestCase(problemSave.Id, problemSave.TestCaseList)
+	utils.Success(c, nil)
 }

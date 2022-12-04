@@ -14,7 +14,7 @@ type Submit struct {
 	UserId    int      `json:"userId" gorm:"comment:提交用户id"`
 	User      *User    `json:"user"`
 	CodePath  string   `json:"codePath" gorm:"type:varchar(255);comment:提交代码存储地址"`
-	Status    int      `json:"status" gorm:"comment:状态(0-待判断, 1-答案正确, 2-答案错误, 3-提交超时, 4-超出最大内存限制)"`
+	Status    int      `json:"status" gorm:"comment:状态(0-待判断, 1-答案正确, 2-答案错误, 3-编译错误, 4-提交超时, 5-超出最大内存限制)"`
 	model.BaseInfo
 }
 

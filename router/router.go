@@ -26,6 +26,7 @@ func RegisterRouter(r *gin.Engine) {
 		authProblemGroup := authGroup.Group("/problem")
 		{
 			authProblemGroup.POST("/add", service.AddProblem)
+			authProblemGroup.POST("/update", service.UpdateProblem)
 		}
 
 		userGroup := rootGroup.Group("/user")
@@ -37,9 +38,10 @@ func RegisterRouter(r *gin.Engine) {
 			userGroup.GET("/rank", service.GetUserRankList)
 		}
 
-		submitGroup := rootGroup.Group("/submit")
+		submitGroup := authGroup.Group("/submit")
 		{
 			submitGroup.POST("/list", service.SubmitList)
+			submitGroup.POST("/submit/:id", service.ProblemSubmit)
 		}
 
 		authCategoryGroup := authGroup.Group("/category")
